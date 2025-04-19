@@ -21,12 +21,14 @@ import { useClasses } from './hooks/useClasses'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
+import SaveIcon from '@mui/icons-material/Save'
 
 function App() {
   const { classes, toggleWatched, updateCurrentTime, getCurrentClass, formatTime, setCurrentClass } = useClasses()
   const [hours, setHours] = useState('')
   const [minutes, setMinutes] = useState('')
   const [seconds, setSeconds] = useState('')
+  const [selectedClassId, setSelectedClassId] = useState<number | null>(null)
 
   const currentClass = getCurrentClass()
   const totalClasses = classes.length
@@ -47,7 +49,9 @@ function App() {
   };
 
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCurrentClass(parseInt(event.target.value));
+    const id = parseInt(event.target.value);
+    setCurrentClass(id);
+    setSelectedClassId(id);
   };
 
   return (
@@ -75,7 +79,10 @@ function App() {
           </Paper>
         )}
 
-        <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+          <Typography variant="subtitle1">
+            Marcar tempo da aula atual:
+          </Typography>
           <TextField
             label="Horas"
             type="number"
@@ -100,6 +107,14 @@ function App() {
             sx={{ width: 100 }}
             inputProps={{ min: 0, max: 59 }}
           />
+          <Button
+            variant="contained"
+            startIcon={<SaveIcon />}
+            onClick={() => selectedClassId && handleTimeUpdate(selectedClassId)}
+            disabled={!selectedClassId || (!hours && !minutes && !seconds)}
+          >
+            Salvar
+          </Button>
         </Box>
 
         <TableContainer component={Paper}>
@@ -108,8 +123,8 @@ function App() {
               <TableRow>
                 <TableCell width="10%">Aula Atual</TableCell>
                 <TableCell width="40%">Nome da Disciplina</TableCell>
-                <TableCell width="20%">Status</TableCell>
-                <TableCell width="20%">Progresso</TableCell>
+                <TableCell width="25%">Status</TableCell>
+                <TableCell width="25%">Progresso</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
