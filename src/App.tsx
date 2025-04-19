@@ -1,5 +1,22 @@
 import { useState } from 'react'
-import { Container, Typography, List, ListItem, ListItemText, Checkbox, Button, TextField, Box, Paper, Radio, RadioGroup, FormControlLabel } from '@mui/material'
+import { 
+  Container, 
+  Typography, 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableContainer, 
+  TableHead, 
+  TableRow, 
+  Paper, 
+  Checkbox, 
+  Button, 
+  TextField, 
+  Box, 
+  Radio, 
+  RadioGroup,
+  Chip
+} from '@mui/material'
 import { useClasses } from './hooks/useClasses'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
@@ -12,6 +29,9 @@ function App() {
   const [seconds, setSeconds] = useState('')
 
   const currentClass = getCurrentClass()
+  const totalClasses = classes.length
+  const watchedClasses = classes.filter(cls => cls.watched).length
+  const progressPercentage = Math.round((watchedClasses / totalClasses) * 100)
 
   const handleTimeUpdate = (classId: number) => {
     const currentTime = {
@@ -31,11 +51,18 @@ function App() {
   };
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="lg">
       <Box sx={{ my: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Progresso das Aulas
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+          <Typography variant="h4" component="h1">
+            Progresso das Aulas
+          </Typography>
+          <Chip 
+            label={`${watchedClasses}/${totalClasses} aulas assistidas (${progressPercentage}%)`}
+            color="primary"
+            variant="outlined"
+          />
+        </Box>
 
         {currentClass && (
           <Paper sx={{ p: 2, mb: 2, bgcolor: '#e3f2fd' }}>
@@ -75,52 +102,59 @@ function App() {
           />
         </Box>
 
-        <List>
-          <RadioGroup
-            value={currentClass?.id.toString() || ''}
-            onChange={handleRadioChange}
-          >
-            {classes.map((cls) => (
-              <ListItem
-                key={cls.id}
-                secondaryAction={
-                  <Box sx={{ display: 'flex', gap: 1 }}>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      onClick={() => handleTimeUpdate(cls.id)}
-                      disabled={!hours && !minutes && !seconds}
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell width="10%">Aula Atual</TableCell>
+                <TableCell width="40%">Nome da Disciplina</TableCell>
+                <TableCell width="20%">Status</TableCell>
+                <TableCell width="20%">Progresso</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {classes.map((cls) => (
+                <TableRow 
+                  key={cls.id}
+                  sx={{ 
+                    backgroundColor: cls.watched ? '#b2fddc' : 'inherit',
+                    '&:hover': {
+                      backgroundColor: cls.watched ? '#a0e4c8' : 'rgba(0, 0, 0, 0.04)'
+                    }
+                  }}
+                >
+                  <TableCell>
+                    <RadioGroup
+                      value={currentClass?.id.toString() || ''}
+                      onChange={handleRadioChange}
                     >
-                      <PlayArrowIcon />
-                    </Button>
-                    <Radio
-                      value={cls.id.toString()}
-                      edge="end"
-                    />
-                    <Checkbox
-                      edge="end"
-                      checked={cls.watched}
-                      onChange={() => toggleWatched(cls.id)}
-                      icon={<RadioButtonUncheckedIcon />}
-                      checkedIcon={<CheckCircleIcon />}
-                    />
-                  </Box>
-                }
-              >
-                <ListItemText
-                  primary={cls.name}
-                  secondary={
-                    cls.currentTime
-                      ? `Progresso: ${formatTime(cls.currentTime)} de ${formatTime(cls.totalTime)}`
-                      : cls.watched
-                      ? 'Assistida'
-                      : 'Não assistida'
-                  }
-                />
-              </ListItem>
-            ))}
-          </RadioGroup>
-        </List>
+                      <Radio
+                        value={cls.id.toString()}
+                      />
+                    </RadioGroup>
+                  </TableCell>
+                  <TableCell>{cls.name}</TableCell>
+                  <TableCell>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Checkbox
+                        checked={cls.watched}
+                        onChange={() => toggleWatched(cls.id)}
+                        icon={<RadioButtonUncheckedIcon />}
+                        checkedIcon={<CheckCircleIcon />}
+                      />
+                      {cls.watched ? 'Assistida' : 'Não assistida'}
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    {cls.currentTime
+                      ? `${formatTime(cls.currentTime)} de ${formatTime(cls.totalTime)}`
+                      : '-'}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Box>
     </Container>
   )
