@@ -51,5 +51,10 @@ export const classes: Class[] = [
   { id: 33, name: "Arquitetura Limpa (Clean Architecture) I", watched: false, isCurrent: false },
   { id: 34, name: "Podcast TCC - Viabilidade econômica", watched: false, isCurrent: false },
   { id: 35, name: "Liderança em Projetos de Tecnologia II", watched: false, isCurrent: false },
-  { id: 36, name: "Podcast TCC - Projeto de Pesquisa", watched: false, isCurrent: false }
+  { id: 36, name: "Podcast TCC - Projeto de Pesquisa", watched: false, isCurrent: false },
+  { id: 37, name: "Arquitetura Limpa (Clean Architecture) I", watched: false, isCurrent: false },
+  { id: 38, name: "Arquitetura Limpa (Clean Architecture) II", watched: false, isCurrent: false },
+  { id: 39, name: "Observabilidade e Monitoramento I", watched: false, isCurrent: false },
+  { id: 40, name: "Observabilidade e Monitoramento II", watched: false, isCurrent: false }
 ]; 
+

@@ -128,13 +128,13 @@ function App() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {classes.map((cls) => (
+              {/* Aulas não assistidas */}
+              {classes.filter(cls => !cls.watched).map((cls) => (
                 <TableRow 
                   key={cls.id}
                   sx={{ 
-                    backgroundColor: cls.watched ? '#b2fddc' : 'inherit',
                     '&:hover': {
-                      backgroundColor: cls.watched ? '#a0e4c8' : 'rgba(0, 0, 0, 0.04)'
+                      backgroundColor: 'rgba(0, 0, 0, 0.04)'
                     }
                   }}
                 >
@@ -157,7 +157,59 @@ function App() {
                         icon={<RadioButtonUncheckedIcon />}
                         checkedIcon={<CheckCircleIcon />}
                       />
-                      {cls.watched ? 'Assistida' : 'Não assistida'}
+                      Não assistida
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    {cls.currentTime
+                      ? `${formatTime(cls.currentTime)} de ${formatTime(cls.totalTime)}`
+                      : '-'}
+                  </TableCell>
+                </TableRow>
+              ))}
+
+              {/* Separador */}
+              {classes.some(cls => cls.watched) && (
+                <TableRow>
+                  <TableCell colSpan={4} sx={{ bgcolor: '#f5f5f5', py: 2 }}>
+                    <Typography variant="subtitle1" color="text.secondary" align="center">
+                      Aulas Assistidas
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              )}
+
+              {/* Aulas assistidas */}
+              {classes.filter(cls => cls.watched).map((cls) => (
+                <TableRow 
+                  key={cls.id}
+                  sx={{ 
+                    backgroundColor: '#b2fddc',
+                    '&:hover': {
+                      backgroundColor: '#a0e4c8'
+                    }
+                  }}
+                >
+                  <TableCell>
+                    <RadioGroup
+                      value={currentClass?.id.toString() || ''}
+                      onChange={handleRadioChange}
+                    >
+                      <Radio
+                        value={cls.id.toString()}
+                      />
+                    </RadioGroup>
+                  </TableCell>
+                  <TableCell>{cls.name}</TableCell>
+                  <TableCell>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Checkbox
+                        checked={cls.watched}
+                        onChange={() => toggleWatched(cls.id)}
+                        icon={<RadioButtonUncheckedIcon />}
+                        checkedIcon={<CheckCircleIcon />}
+                      />
+                      Assistida
                     </Box>
                   </TableCell>
                   <TableCell>
